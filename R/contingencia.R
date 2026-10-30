@@ -131,17 +131,33 @@ lite_contingencia <- function(datos, fila, columna, alfa = 0.05,
   # --- Residuos estandarizados ajustados ------------------------------------
   res_std <- prueba$stdres
   sig <- abs(res_std) > z
-  celdas <- matrix(formatC(res_std, format = "f", digits = 2),
-                   nrow = nrow(res_std), dimnames = dimnames(res_std))
-  t_res <- MATrstars::kable_rstars(as.data.frame.matrix(celdas),
-                                   caption = sprintf("Residuos estandarizados ajustados (naranja: |r| > %.2f)", z)) %>%
-    kableExtra::column_spec(1, bold = TRUE)
-  # Coloreado por columnas (cell_spec() + escape = FALSE no es fiable si
-  # kableExtra no esta adjuntado: kable_styling() vuelve a escapar el HTML).
-  for (j in seq_len(ncol(res_std))) {
-    t_res <- kableExtra::column_spec(t_res, j + 1,
-                                     background = ifelse(sig[, j], "orange", "white"),
-                                     bold = sig[, j])
+  txt <- formatC(res_std, format = "f", digits = 2)
+  cap_res <- sprintf("Residuos estandarizados ajustados (naranja: |r| > %.2f)", z)
+  if (knitr::is_latex_output()) {
+    # En PDF: celdas coloreadas con cell_spec() en una tabla LaTeX simple
+    # (column_spec() sobre las celdas centradas de kable_rstars() genera
+    # \cellcolor{}{\multicolumn...}, que LaTeX no admite).
+    celdas <- matrix(kableExtra::cell_spec(txt, format = "latex",
+                                           background = ifelse(sig, "orange", "white"),
+                                           bold = sig),
+                     nrow = nrow(res_std), dimnames = dimnames(res_std))
+    if (isTRUE(getOption("matrstars.suppress_caption", FALSE))) cap_res <- NULL
+    t_res <- knitr::kable(as.data.frame.matrix(celdas), format = "latex",
+                          booktabs = TRUE, escape = FALSE, align = "c",
+                          caption = cap_res) %>%
+      kableExtra::kable_styling(position = "center", font_size = 11) %>%
+      kableExtra::column_spec(1, bold = TRUE)
+  } else {
+    celdas <- matrix(txt, nrow = nrow(res_std), dimnames = dimnames(res_std))
+    t_res <- MATrstars::kable_rstars(as.data.frame.matrix(celdas), caption = cap_res) %>%
+      kableExtra::column_spec(1, bold = TRUE)
+    # Coloreado por columnas (cell_spec() + escape = FALSE no es fiable en
+    # HTML si kableExtra no esta adjuntado: kable_styling() vuelve a escapar).
+    for (j in seq_len(ncol(res_std))) {
+      t_res <- kableExtra::column_spec(t_res, j + 1,
+                                       background = ifelse(sig[, j], "orange", "white"),
+                                       bold = sig[, j])
+    }
   }
 
   colores <- ifelse(sig, "orange", "lightgray")

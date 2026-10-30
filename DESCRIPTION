@@ -1,6 +1,6 @@
 Package: MATlite
 Title: Funciones Simplificadas para el Libro R-Stars Lite
-Version: 0.2.0
+Version: 0.2.1
 Authors@R:
     person("Miguel Ángel", "Tarancón",
            email = "MiguelAngel.Tarancon@uclm.es",
@@ -33,6 +33,7 @@ Imports:
     gtExtras,
     htmltools,
     kableExtra,
+    knitr,
     magrittr,
     moments,
     patchwork,

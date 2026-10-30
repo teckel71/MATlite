@@ -165,3 +165,9 @@ lite_resumen <- function(datos, titulo = NULL) {
 print.lite_gt <- function(x, ...) {
   suppressWarnings(NextMethod())
 }
+
+#' @exportS3Method knitr::knit_print
+knit_print.lite_gt <- function(x, ...) {
+  tabla <- structure(x, class = setdiff(class(x), "lite_gt"))
+  suppressWarnings(knitr::knit_print(tabla, ...))
+}

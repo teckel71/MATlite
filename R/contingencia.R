@@ -3,6 +3,14 @@
 # =============================================================================
 
 # Grafico de base "grid" (vcd) guardado como funcion: se dibuja al imprimirlo.
+# Etiquetas horizontales a la izquierda (los nombres largos de categoria no
+# se solapan), alineadas a la derecha junto al grafico.
+etiquetas_vcd <- function(desplaza) {
+  list(rot_labels = c(top = 0, left = 0), just_labels = c(left = "right"),
+       offset_varnames = c(left = desplaza), offset_labels = c(left = 0.3),
+       gp_labels = grid::gpar(fontsize = 10))
+}
+
 grafico_grid <- function(f) structure(list(dibujar = f), class = "lite_grafico")
 
 #' @export
@@ -94,7 +102,7 @@ lite_contingencia <- function(datos, fila, columna, alfa = 0.05,
   # --- Graficos -------------------------------------------------------------
   mosaico <- grafico_grid(function() {
     vcd::mosaic(tab, main = titulo, sub = subtitulo, gp = vcd::shading_Marimekko(tab),
-                labeling_args = list(rot_labels = c(0, 90), gp_labels = grid::gpar(fontsize = 10)),
+                labeling_args = etiquetas_vcd(5.5), margins = c(left = 8),
                 main_gp = grid::gpar(fontsize = 16), sub_gp = grid::gpar(fontsize = 14))
   })
 
@@ -123,13 +131,18 @@ lite_contingencia <- function(datos, fila, columna, alfa = 0.05,
   # --- Residuos estandarizados ajustados ------------------------------------
   res_std <- prueba$stdres
   sig <- abs(res_std) > z
-  celdas <- matrix(kableExtra::cell_spec(formatC(res_std, format = "f", digits = 2),
-                                         background = ifelse(sig, "orange", "white"),
-                                         bold = sig),
+  celdas <- matrix(formatC(res_std, format = "f", digits = 2),
                    nrow = nrow(res_std), dimnames = dimnames(res_std))
-  t_res <- MATrstars::kable_rstars(as.data.frame.matrix(celdas), escape = FALSE,
+  t_res <- MATrstars::kable_rstars(as.data.frame.matrix(celdas),
                                    caption = sprintf("Residuos estandarizados ajustados (naranja: |r| > %.2f)", z)) %>%
     kableExtra::column_spec(1, bold = TRUE)
+  # Coloreado por columnas (cell_spec() + escape = FALSE no es fiable si
+  # kableExtra no esta adjuntado: kable_styling() vuelve a escapar el HTML).
+  for (j in seq_len(ncol(res_std))) {
+    t_res <- kableExtra::column_spec(t_res, j + 1,
+                                     background = ifelse(sig[, j], "orange", "white"),
+                                     bold = sig[, j])
+  }
 
   colores <- ifelse(sig, "orange", "lightgray")
   asociacion <- grafico_grid(function() {
@@ -137,7 +150,7 @@ lite_contingencia <- function(datos, fila, columna, alfa = 0.05,
                sub = sprintf("Residuos de Pearson Tipificados. Naranja: significativos con sig. = %s",
                              format(alfa, decimal.mark = ",")),
                compress = FALSE, gp = grid::gpar(fill = colores),
-               labeling_args = list(rot_labels = c(0, 90), gp_labels = grid::gpar(fontsize = 10)),
+               labeling_args = etiquetas_vcd(4.5), margins = c(left = 8),
                main_gp = grid::gpar(fontsize = 16), sub_gp = grid::gpar(fontsize = 14))
   })
 

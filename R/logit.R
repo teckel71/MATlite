@@ -137,6 +137,7 @@ lite_logit_descriptivo <- function(datos, dependiente, variables = NULL,
       ggplot2::ggplot(dm, ggplot2::aes(x = .data$grupo, y = .data$media, fill = .data$grupo)) +
         ggplot2::geom_col(width = 0.6) +
         ggplot2::geom_text(ggplot2::aes(label = round(.data$media, 1)), vjust = -0.5, size = 3) +
+        ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.15))) +
         ggplot2::scale_fill_manual(values = colores, labels = etiquetas) +
         ggplot2::labs(title = v, x = NULL, y = "Media", fill = rotulo) +
         ggplot2::theme_minimal() +

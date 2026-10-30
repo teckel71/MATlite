@@ -35,7 +35,9 @@ galaxia_fjur               # todo junto
 
 galaxia_fjur$tabla         # tabla de contingencia
 galaxia_fjur$mosaico       # gráfico de mosaico
+galaxia_fjur$barras        # frecuencias marginales
 galaxia_fjur$chi2          # contraste de independencia
+galaxia_fjur$esperadas     # frecuencias esperadas bajo independencia
 galaxia_fjur$residuos      # residuos estandarizados ajustados
 galaxia_fjur$asociacion    # gráfico de asociación
 galaxia_fjur$medidas       # medidas de asociación (C, V de Cramér)
@@ -45,6 +47,12 @@ galaxia_fjur$medidas       # medidas de asociación (C, V de Cramér)
 fjur_eflo <- lite_contingencia(seleccion, FJUR, EFLO,
                                titulo    = "Forma Jurídica y Estado de la Flota",
                                subtitulo = "Empresas TMI")
-fjur_eflo
+fjur_eflo                  # todo junto
+
+fjur_eflo$tabla
+fjur_eflo$mosaico
+fjur_eflo$chi2
+fjur_eflo$asociacion
+fjur_eflo$medidas
 
 # Fin del script :)

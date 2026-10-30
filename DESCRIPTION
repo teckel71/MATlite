@@ -1,6 +1,6 @@
 Package: MATlite
 Title: Funciones Simplificadas para el Libro R-Stars Lite
-Version: 0.1.0
+Version: 0.2.0
 Authors@R:
     person("Miguel Ángel", "Tarancón",
            email = "MiguelAngel.Tarancon@uclm.es",
@@ -28,6 +28,8 @@ Imports:
     factoextra,
     GGally,
     ggplot2,
+    ggrepel,
+    grid,
     gtExtras,
     htmltools,
     kableExtra,
@@ -38,8 +40,12 @@ Imports:
     readxl,
     rlang,
     rmarkdown,
+    scales,
+    smacof,
     stats,
-    utils
+    tidyselect,
+    utils,
+    vcd
 Suggests:
     testthat (>= 3.0.0)
 Remotes:

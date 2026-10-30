@@ -156,5 +156,12 @@ lite_importa <- function(archivo, hoja = "Datos", na = "n.d.",
 #' @export
 lite_resumen <- function(datos, titulo = NULL) {
   if (is.null(titulo)) titulo <- deparse(substitute(datos))
-  suppressWarnings(gtExtras::gt_plt_summary(datos, title = titulo))
+  res <- suppressWarnings(gtExtras::gt_plt_summary(datos, title = titulo))
+  class(res) <- c("lite_gt", class(res))
+  res
+}
+
+#' @export
+print.lite_gt <- function(x, ...) {
+  suppressWarnings(NextMethod())
 }

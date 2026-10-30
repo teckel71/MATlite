@@ -27,9 +27,9 @@ Todas las funciones empiezan por `lite_`: al escribirlo en RStudio, el autocompl
 | 3. Análisis previo | `lite_na()`, `lite_outliers()`, `lite_describe()`, `lite_correlaciones()` |
 | 4. Componentes principales | `lite_acp()`, `lite_acp_ranking()` |
 | 5. Clúster jerárquico | `lite_cluster_ward()` |
-| 6. Logit binomial | *en desarrollo* |
-| 7. Tablas de contingencia | *en desarrollo* |
-| 8. Escalado multidimensional | *en desarrollo* |
+| 6. Logit binomial | `lite_factor()`, `lite_logit_descriptivo()`, `lite_particion()`, `lite_logit()`, `lite_logit_seleccion()`, `lite_logit_escenarios()` |
+| 7. Tablas de contingencia | `lite_recodifica()`, `lite_contingencia()` |
+| 8. Escalado multidimensional | `lite_emd_dimensiones()`, `lite_emd()` |
 
 ## Cómo funcionan los resultados
 

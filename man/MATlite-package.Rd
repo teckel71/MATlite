@@ -12,11 +12,13 @@ RStudio, el autocompletado las muestra todas.
 }
 \details{
 Funciones de datos (devuelven un data frame): \code{\link[=lite_importa]{lite_importa()}},
-\code{\link[=lite_na]{lite_na()}}, \code{\link[=lite_outliers]{lite_outliers()}}.
+\code{\link[=lite_na]{lite_na()}}, \code{\link[=lite_outliers]{lite_outliers()}}, \code{\link[=lite_factor]{lite_factor()}}, \code{\link[=lite_recodifica]{lite_recodifica()}}.
 
 Funciones de análisis (devuelven un objeto \link{matlite}): \code{\link[=lite_describe]{lite_describe()}},
 \code{\link[=lite_correlaciones]{lite_correlaciones()}}, \code{\link[=lite_acp]{lite_acp()}}, \code{\link[=lite_acp_ranking]{lite_acp_ranking()}},
-\code{\link[=lite_cluster_ward]{lite_cluster_ward()}}.
+\code{\link[=lite_cluster_ward]{lite_cluster_ward()}}, \code{\link[=lite_logit_descriptivo]{lite_logit_descriptivo()}}, \code{\link[=lite_particion]{lite_particion()}},
+\code{\link[=lite_logit]{lite_logit()}}, \code{\link[=lite_logit_seleccion]{lite_logit_seleccion()}}, \code{\link[=lite_logit_escenarios]{lite_logit_escenarios()}},
+\code{\link[=lite_contingencia]{lite_contingencia()}}, \code{\link[=lite_emd_dimensiones]{lite_emd_dimensiones()}}, \code{\link[=lite_emd]{lite_emd()}}.
 
 Utilidades: \code{\link[=lite_comprueba]{lite_comprueba()}}, \code{\link[=lite_datos]{lite_datos()}}, \code{\link[=lite_resumen]{lite_resumen()}},
 \code{\link[=lite_tabla]{lite_tabla()}}, \code{\link[=lite_patchwork]{lite_patchwork()}}.

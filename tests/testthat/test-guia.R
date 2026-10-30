@@ -78,3 +78,65 @@ test_that("Cap. Lite 5 (Guia 7.3): cluster de Ward", {
   expect_equal(g[["4"]], "chakotay cargo systems")
   expect_equal(g[["5"]], "home one cargo")
 })
+
+test_that("Cap. Lite 6 (Guia 10): logit binomial", {
+  skip_if_not(hay_datos("licencias_100.xlsx"))
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off())
+  L <- silencio(lite_importa(ruta("licencias_100.xlsx")))
+  L <- silencio(lite_factor(L, EFLO, niveles = c("ANTIGUA", "MADURA", "RENOVADA")))
+  L <- silencio(lite_factor(L, LICENCIA))
+  mu <- silencio(lite_particion(L, 80, dependiente = LICENCIA))
+  expect_equal(as.vector(table(mu$estimacion$LICENCIA)), c(52, 28))
+  expect_equal(as.vector(table(mu$test$LICENCIA)), c(8, 12))
+
+  co <- silencio(lite_logit(mu$estimacion, LICENCIA,
+                            c(SOLVENCIA, IPUNT, TINCID, IFIDE, FLOTA, RUTAS, EXPERIENCIA, EFLO),
+                            test = mu$test))
+  v <- co$valores
+  expect_equal(v$aic, 92.5858, tolerance = 1e-4)
+  expect_equal(v$aic_nulo, 105.5915, tolerance = 1e-4)
+  expect_equal(v$nagelkerke, 0.4425, tolerance = 1e-3)
+  expect_equal(v$wald$Chi2, 0.1801, tolerance = 1e-3)
+  expect_equal(v$wald$p, 0.9139, tolerance = 1e-3)
+  expect_equal(c(v$acierto_estimacion, v$acierto_test), c(80, 80))
+  expect_equal(unname(v$coef["TINCID", 4]), 0.0072, tolerance = 1e-2)
+
+  es <- silencio(lite_logit_escenarios(co, ruta("escenarios_logit_rstars.xlsx")))
+  expect_equal(es$datos$.prob, c(0.00197, 0.98547, 0.35276), tolerance = 1e-3)
+  expect_equal(es$datos$.clasif, c(0, 1, 0))
+
+  re <- silencio(lite_logit_seleccion(co, mostrar_pasos = FALSE))
+  expect_equal(attr(stats::terms(re$modelo), "term.labels"),
+               c("SOLVENCIA", "IPUNT", "TINCID", "IFIDE"))
+  expect_equal(re$valores$aic, 85.7003, tolerance = 1e-4)
+  expect_equal(c(re$valores$acierto_estimacion, re$valores$acierto_test), c(76.25, 80))
+})
+
+test_that("Cap. Lite 7 (Guia 11.2): tablas de contingencia", {
+  skip_if_not(hay_datos("interestelar_300.xlsx"))
+  I <- silencio(lite_importa(ruta("interestelar_300.xlsx")))[, c("GALAXIA", "FJUR", "EFLO")]
+  c1 <- silencio(lite_contingencia(I, GALAXIA, FJUR))
+  expect_equal(c1$valores$chi2, 18.209, tolerance = 1e-4)
+  expect_equal(c1$valores$gl, 8)
+  expect_equal(c1$valores$p, 0.0197, tolerance = 1e-2)
+  expect_equal(c1$valores$C, 0.239, tolerance = 1e-2)
+  expect_equal(c1$valores$V, 0.174, tolerance = 1e-2)
+  c2 <- silencio(lite_contingencia(I, FJUR, EFLO))
+  expect_equal(c2$valores$p, 0.4255, tolerance = 1e-3)
+  I2 <- silencio(lite_recodifica(I, GALAXIA, c("Gran Nube de Magallanes" = "GN Magallanes")))
+  expect_true("GN Magallanes" %in% I2$GALAXIA)
+})
+
+test_that("Cap. Lite 8 (Guia 12): escalado multidimensional", {
+  skip_if_not(hay_datos("percepcion_interestelar.xlsx"))
+  P <- silencio(lite_importa(ruta("percepcion_interestelar.xlsx")))
+  e0 <- silencio(lite_emd_dimensiones(P))
+  expect_equal(round(e0$valores$stress, 4), c(0.0422, 0.0196, 0.0038, 0.0024, 0.0010, 0.0000))
+  e2 <- silencio(lite_emd(P))
+  expect_equal(unname(e2$valores$correlaciones[c("PRECIO", "INNOVACION", "PUNTUALIDAD"), 1]),
+               c(0.986, -0.980, -0.969), tolerance = 1e-3)
+  expect_equal(e2$valores$niter, 20)
+  e3 <- silencio(lite_emd(P, ndim = 3))
+  expect_equal(e3$valores$stress, 0.0038, tolerance = 1e-2)
+})
